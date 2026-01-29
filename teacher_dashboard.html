@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="background-animation"></div>
+    <div class="container" style="max-width: 800px; margin-top: 50px;">
+        <div class="quiz-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="margin:0;">Teacher Dashboard</h1>
+            <button onclick="logout()" class="btn"
+                style="width: auto; background-color: var(--error-color);">Logout</button>
+        </div>
+
+        <div class="stats-grid" style="display: flex; gap: 2rem; margin: 2rem 0;">
+            <div class="stat-card"
+                style="flex: 1; background: #fff; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center;">
+                <div class="stat-value" id="total-students"
+                    style="font-size: 2.5rem; font-weight: bold; color: var(--primary-color);">0</div>
+                <div class="stat-label" style="color: var(--subtext-color);">Total Quizzes Taken</div>
+            </div>
+            <!-- Placeholder for future stats -->
+        </div>
+
+        <h3>Student Results</h3>
+        <div class="table-container">
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Category</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

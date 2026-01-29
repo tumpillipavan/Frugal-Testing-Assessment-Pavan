@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Quiz Results</h1>
+        <p class="subtitle">Here's how you performed</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="resultScore">0%</div>
+                <div class="stat-label">Overall Score</div>
+            </div>
+            <div class="stat-value" id="totalCorrect">0/5</div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="scoreChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="timeChart"></canvas>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="window.location.href='index.html'" class="btn" style="flex: 1;">Play Again</button>
+            <button onclick="logout()" class="btn" style="flex: 1; background-color: #ef4444;">Logout</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
