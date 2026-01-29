@@ -1,4 +1,4 @@
-// Data Store
+
 const QUESTIONS_DB = [
     // --- JAVA ---
     // Easy
@@ -112,7 +112,7 @@ const QUESTIONS_DB = [
     { id: 330, category: 'GK', difficulty: 'Hard', text: 'Who painted "Starry Night"?', options: ['Vincent van Gogh', 'Pablo Picasso', 'Claude Monet', 'Salvador Dali'], correct: 'Vincent van Gogh' }
 ];
 
-// Utility: Shuffle Array
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -127,9 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
 
     if (path.includes('signup.html')) {
-        // No init function needed automatically, selectRole handles flow
-
-        // Password Toggle Logic for Signup
         const toggleSignupPassword = document.getElementById('toggleSignupPassword');
         const signupPasswordInput = document.getElementById('new-password');
 
@@ -144,10 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (path.includes('login.html')) {
         initLogin();
     } else if (path.includes('teacher_dashboard.html')) {
-        checkSession('teacher'); // Only teachers allowed
+        checkSession('teacher');
         initTeacherDashboard();
     } else if (path.includes('index.html')) {
-        checkSession('student'); // Only students allowed
+        checkSession('student');
         initSetup();
     } else if (path.includes('quiz.html')) {
         checkSession('student');
@@ -167,7 +164,6 @@ function checkSession(requiredRole) {
         window.location.href = 'login.html';
         return;
     }
-    // Strict Role Check
     if (requiredRole && user.role !== requiredRole) {
         alert("Access Denied: You are not a " + requiredRole);
         window.location.href = 'login.html';
@@ -179,8 +175,6 @@ function selectRole(role) {
     document.getElementById('signup-form-container').style.display = 'block';
     document.getElementById('selected-role').value = role;
     document.getElementById('form-title').textContent = role === 'student' ? 'Student Sign Up' : 'Teacher Sign Up';
-
-    // Update Placeholder based on Role
     const idInput = document.getElementById('new-regno');
     if (idInput) {
         idInput.placeholder = role === 'student' ? 'Registration Number' : 'UID Number';
@@ -197,16 +191,12 @@ if (signupForm) {
         const regno = document.getElementById('new-regno').value;
         const email = document.getElementById('new-email').value;
         const pass = document.getElementById('new-password').value;
-
-        // Get existing users or init empty
         const usersDB = JSON.parse(localStorage.getItem('usersDB')) || {};
 
         if (usersDB[email]) {
             alert('Email already exists!');
             return;
         }
-
-        // SAVE NEW USER (Using Email as ID)
         usersDB[email] = { name, pass, role, regno, email };
         localStorage.setItem('usersDB', JSON.stringify(usersDB));
 
@@ -218,27 +208,25 @@ if (signupForm) {
 /**
  * PAGE: LOGIN
  */
-/**
- * PAGE: LOGIN
- */
+
 function initLogin() {
     const form = document.getElementById('login-form');
     if (!form) return;
 
-    // Clear existing session on login page load
+    
     sessionStorage.removeItem('currentUser');
 
-    // Password Toggle Logic
+
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
 
     if (togglePassword && passwordInput) {
         togglePassword.addEventListener('click', function () {
-            // Toggle type
+        
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
 
-            // Toggle icon
+          
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
         });
@@ -251,29 +239,29 @@ function initLogin() {
         const btn = document.getElementById('loginBtn');
         const errorMsg = document.getElementById('login-error');
 
-        // Loading State
+      
         const originalBtnText = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
         btn.disabled = true;
 
         setTimeout(() => {
-            // BACKDOOR for Automation
+
             if (user === 'admin' && pass === 'password') {
                 sessionStorage.setItem('currentUser', JSON.stringify({ role: 'student', name: 'Admin Bot', username: 'admin' }));
                 window.location.href = 'index.html';
                 return;
             }
 
-            // Get users from DB (New Key: usersDB)
+           
             const usersDB = JSON.parse(localStorage.getItem('usersDB')) || {};
             const userAccount = usersDB[user]; // Lookup by Email (confusingly id="username" in HTML)
 
-            // Check Credentials
+          
             if (userAccount && userAccount.pass === pass) {
-                // Save Session
+               
                 sessionStorage.setItem('currentUser', JSON.stringify(userAccount));
 
-                // Routing based on Role
+          
                 if (userAccount.role === 'teacher') {
                     window.location.href = 'teacher_dashboard.html';
                 } else {
@@ -282,11 +270,11 @@ function initLogin() {
             } else {
                 errorMsg.style.display = 'flex';
 
-                // Reset Button
+            
                 btn.innerHTML = originalBtnText;
                 btn.disabled = false;
 
-                // Shake animation for error
+              
                 const container = document.querySelector('.login-container');
                 container.style.animation = 'shake 0.5s ease';
                 setTimeout(() => container.style.animation = '', 500);
@@ -300,10 +288,10 @@ function initLogin() {
  */
 function initSetup() {
     const form = document.getElementById('setup-form');
-    // Save to sessionStorage immediately on change if desired, but form submit is cleaner
+
     if (!form) return;
 
-    // Clear previous session logic
+  
     sessionStorage.removeItem('quizState');
 
     form.addEventListener('submit', (e) => {
@@ -311,20 +299,20 @@ function initSetup() {
         const category = document.getElementById('category').value;
         const difficulty = document.getElementById('difficulty').value;
 
-        // Store specific selections as requested
+      
         sessionStorage.setItem('category', category);
         sessionStorage.setItem('difficulty', difficulty);
 
-        // Filter Questions
+      
         let filteredQuestions = QUESTIONS_DB.filter(q =>
             (q.category === category || category === 'Any') &&
             (q.difficulty === difficulty || difficulty === 'Any')
         );
 
-        // Randomize Order
+      
         shuffleArray(filteredQuestions);
 
-        // Limit to 10
+     
         filteredQuestions = filteredQuestions.slice(0, 10);
 
         if (filteredQuestions.length === 0) {
@@ -335,8 +323,8 @@ function initSetup() {
         const initialState = {
             questions: filteredQuestions,
             currentIndex: 0,
-            answers: {}, // { questionId: selectedOptionOrNull }
-            timePerQuestion: {}, // { questionId: secondsTaken }
+            answers: {}, 
+            timePerQuestion: {}, 
             startTime: Date.now()
         };
 
@@ -349,7 +337,7 @@ function initSetup() {
  * PAGE 2: QUIZ
  */
 let quizTimerInterval;
-const TIME_LIMIT = 15; // 15 seconds per question
+const TIME_LIMIT = 15;
 
 function initQuiz() {
     const state = JSON.parse(sessionStorage.getItem('quizState'));
@@ -361,7 +349,7 @@ function initQuiz() {
     renderQuestion(state);
     startTimer(state);
 
-    // Event Listeners (Updated IDs)
+  
     document.getElementById('nextBtn').addEventListener('click', () => nextQuestion(state));
     document.getElementById('prevBtn').addEventListener('click', () => prevQuestion(state));
     document.getElementById('submitBtn').addEventListener('click', () => submitQuiz(state));
@@ -372,20 +360,20 @@ function renderQuestion(state) {
     const total = state.questions.length;
     const current = state.currentIndex + 1;
 
-    // Update UI
+ 
     document.getElementById('question-progress').textContent = `Question ${current} of ${total}`;
 
-    // NEW: Upgrade 3 - Smooth Transitions
+   
     const questionContainer = document.querySelector('.question-container');
     if (questionContainer) {
         questionContainer.classList.remove('fade-in-active');
-        void questionContainer.offsetWidth; // Trigger reflow to restart animation
+        void questionContainer.offsetWidth; 
         questionContainer.classList.add('fade-in-active');
     }
 
     document.getElementById('questionText').textContent = question.text;
 
-    // Options
+  
     const optionsContainer = document.getElementById('options-container');
     optionsContainer.innerHTML = '';
 
@@ -394,7 +382,7 @@ function renderQuestion(state) {
         btn.className = 'option-btn';
         btn.textContent = opt;
 
-        // Restore previous selection
+     
         if (state.answers[question.id] === opt) {
             btn.classList.add('selected');
         }
@@ -403,7 +391,7 @@ function renderQuestion(state) {
         optionsContainer.appendChild(btn);
     });
 
-    // Navigation Buttons
+   
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const submitBtn = document.getElementById('submitBtn');
@@ -438,7 +426,7 @@ function startTimer(state) {
         timeLeft--;
         timerElem.textContent = formatTime(timeLeft);
 
-        // NEW: Upgrade 2 - Panic Mode
+        
         if (timeLeft <= 5) {
             timerElem.classList.add('warning');
         } else {
@@ -447,19 +435,18 @@ function startTimer(state) {
 
         if (timeLeft <= 0) {
             clearInterval(quizTimerInterval);
-            // Record time
+           
             recordTime(state, questionId, TIME_LIMIT);
 
-            // EXPLICIT: Mark as null/unanswered if not answered yet
+         
             if (!state.answers[questionId]) {
                 state.answers[questionId] = null;
             }
             saveState(state);
 
-            // Auto move
+         
             if (state.currentIndex < state.questions.length - 1) {
-                // Determine if we need to manually trigger next UI update or just call nextQuestion
-                // nextQuestion handles render and new timer
+              
                 state.currentIndex++;
                 saveState(state);
                 renderQuestion(state);
@@ -475,8 +462,7 @@ function startTimer(state) {
 
 function recordTime(state, questionId, limitOverride) {
     const elapsed = limitOverride || Math.floor((Date.now() - state.currentQuestionStartTime) / 1000);
-    // Accumulate time if revisited? Or overwrite? 
-    // Usually overwrite or accumulate. Simple overwrite for now based on last visit.
+
     state.timePerQuestion[questionId] = elapsed;
     saveState(state);
 }
@@ -514,9 +500,7 @@ function saveState(state) {
 /**
  * PAGE 3: RESULT
  */
-/**
- * PAGE 3: RESULT
- */
+
 function initResult() {
     const state = JSON.parse(sessionStorage.getItem('quizState'));
     const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -543,14 +527,13 @@ function initResult() {
     if (scoreElem) scoreElem.textContent = `${percentage}%`;
     if (correctElem) correctElem.textContent = `${correctCount}/${total}`;
 
-    // --- NEW: SAVE TO LOCALSTORAGE ---
-    // Only save if we haven't saved this session yet (prevent duplicate on refresh)
+
     if (!sessionStorage.getItem('scoreSaved')) {
         const resultsDB = JSON.parse(localStorage.getItem('quizResults')) || [];
 
         resultsDB.push({
             studentName: currentUser.name,
-            email: currentUser.email, // Use Email as ID
+            email: currentUser.email, 
             score: `${percentage}%`,
             category: sessionStorage.getItem('category') || 'General',
             difficulty: sessionStorage.getItem('difficulty') || 'Medium',
@@ -558,7 +541,7 @@ function initResult() {
         });
 
         localStorage.setItem('quizResults', JSON.stringify(resultsDB));
-        sessionStorage.setItem('scoreSaved', 'true'); // Flag to prevent duplicates
+        sessionStorage.setItem('scoreSaved', 'true'); 
     }
 
     renderCharts(state, correctCount, total);
@@ -602,19 +585,19 @@ function initTeacherDashboard() {
     const resultsDB = JSON.parse(localStorage.getItem('quizResults')) || [];
     const tbody = document.getElementById('results-body');
 
-    // Filter out invalid/legacy data (Clean up dashboard)
+   
     const validResults = resultsDB.filter(r => r.email || r.username);
 
-    // Update Stats (Use valid count)
+   
     document.getElementById('total-students').textContent = validResults.length;
 
-    // Populate Table
+   
     if (validResults.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4">No quizzes taken yet.</td></tr>';
         return;
     }
 
-    // Reverse to show newest first
+   
     const reversedDB = [...validResults].reverse();
 
     tbody.innerHTML = reversedDB.map(r => `
